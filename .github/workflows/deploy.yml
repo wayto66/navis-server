@@ -18,7 +18,8 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
+          NAVIS_DATABASE_URL: ${{ secrets.NAVIS_DATABASE_URL }}
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
-          ssh -i private_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "cd /home/navis-server && git pull origin main && npm ci && npx prisma migrate deploy && npx prisma generate && npm run build && pm2 restart 'navis-server'"
+          ssh -i private_key -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "cd /home/navis-server && git pull origin main && export NAVIS_DATABASE_URL='$NAVIS_DATABASE_URL' && npm ci && npx prisma migrate deploy && npx prisma generate && npm run build && pm2 restart 'navis-server'"
