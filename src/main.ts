@@ -7,14 +7,18 @@ import { AppModule } from './modules/app/app.module';
 async function bootstrap() {
   let httpsOptions: { key: Buffer; cert: Buffer } | undefined;
   if (
-    fs.existsSync('etc/letsencrypt/live/alabarda.link/privkey.pem') &&
-    fs.existsSync('etc/letsencrypt/live/alabarda.link/fullchain.pem')
+    fs.existsSync('/etc/letsencrypt/live/alabarda.link/privkey.pem') &&
+    fs.existsSync('/etc/letsencrypt/live/alabarda.link/fullchain.pem')
   ) {
     httpsOptions = {
-      key: fs.readFileSync('etc/letsencrypt/live/alabarda.link/privkey.pem'),
-      cert: fs.readFileSync('etc/letsencrypt/live/alabarda.link/fullchain.pem'),
+      key: fs.readFileSync('/etc/letsencrypt/live/alabarda.link/privkey.pem'),
+      cert: fs.readFileSync(
+        '/etc/letsencrypt/live/alabarda.link/fullchain.pem',
+      ),
     };
   }
+
+  console.log({ httpsOptions });
 
   const app = await NestFactory.create(AppModule, { httpsOptions });
   app.useGlobalPipes(
