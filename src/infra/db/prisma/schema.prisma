@@ -1,0 +1,173 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int       @id @default(autoincrement())
+  phone            String    @unique
+  username         String    @unique
+  password         String
+  name             String
+  image            String?
+  role             Role      @default(USER)
+  isActive         Boolean   @default(true)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  createdTasks     Task[]    @relation(name: "created")
+  assignedTasks    Task[]    @relation(name: "assigned")
+  comments         Comment[]
+  projects         Project[]
+  assignedRoutines Routine[] @relation(name: "assigned")
+  createdRoutines  Routine[] @relation(name: "created")
+  notes            Note[]
+}
+
+model Customer {
+  id        Int       @id @default(autoincrement())
+  name      String
+  image     String?
+  phone     String?
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  tasks     Task[] // Relação com as solicitações do Customere
+  projects  Project[]
+  routines  Routine[]
+}
+
+model Project {
+  id          Int          @id @default(autoincrement())
+  title       String
+  description String
+  tasks       Task[]
+  comments    Comment[]
+  targetDate  DateTime?
+  isActive    Boolean      @default(true)
+  isDone      Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  status      TaskStatus
+  priority    TaskPriority
+  customer    Customer     @relation(fields: [customerId], references: [id])
+  customerId  Int
+  user        User         @relation(fields: [userId], references: [id])
+  userId      Int
+}
+
+model Task {
+  id           Int              @id @default(autoincrement())
+  title        String
+  description  String
+  status       TaskStatus       @default(PENDING)
+  priority     TaskPriority     @default(MEDIUM)
+  isActive     Boolean          @default(true)
+  isDone       Boolean          @default(false)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  targetDate   DateTime?
+  customerId   Int
+  customer     Customer         @relation(fields: [customerId], references: [id])
+  creatorId    Int
+  creator      User             @relation(fields: [creatorId], references: [id], name: "created")
+  assignedId   Int
+  assigned     User             @relation(fields: [assignedId], references: [id], name: "assigned")
+  comments     Comment[]
+  dependencies TaskDependency[] @relation(name: "dependencies")
+  dependsOn    TaskDependency[] @relation(name: "dependsOn")
+  project      Project          @relation(fields: [projectId], references: [id])
+  projectId    Int
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  task      Task?    @relation(fields: [taskId], references: [id])
+  taskId    Int?
+  project   Project? @relation(fields: [projectId], references: [id])
+  projectId Int?
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
+
+  createdAt DateTime @default(now())
+  routine   Routine? @relation(fields: [routineId], references: [id])
+  routineId Int?
+}
+
+model Routine {
+  id          Int         @id @default(autoincrement())
+  title       String
+  description String
+  mode        RoutineMode
+  dayCount    Int?
+  weekDays    Int[]
+  monthDays   Int[]
+  yearDay     Int?
+  yearMonth   Int?
+  monthCount  Int?
+  creator     User        @relation(fields: [creatorId], references: [id], name: "created")
+  creatorId   Int
+  assigned    User        @relation(fields: [assignedId], references: [id], name: "assigned")
+  assignedId  Int
+  customerId  Int
+  customer    Customer    @relation(fields: [customerId], references: [id])
+  comments    Comment[]
+  lastSolved  DateTime?
+  targetDate  DateTime
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt()
+}
+
+model Note {
+  id      Int    @id @default(autoincrement())
+  title   String
+  content String
+
+  targetDate DateTime?
+  user       User      @relation(fields: [userId], references: [id])
+  userId     Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt()
+}
+
+model TaskDependency {
+  id          Int  @id @default(autoincrement())
+  taskId      Int
+  dependsOnId Int
+  task        Task @relation("dependencies", fields: [taskId], references: [id])
+  dependsOn   Task @relation("dependsOn", fields: [dependsOnId], references: [id])
+}
+
+enum RoutineMode {
+  WEEKLY
+  MONTHLY
+  MONTH_COUNT
+  DAY_COUNT
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum TaskStatus {
+  PENDING
+  DEFINE_DEADLINE
+  IN_PROGRESS
+  COMPLETED
+  IN_CHANGE
+  IN_APPROVAL
+  CANCELLED
+  LOCKED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
