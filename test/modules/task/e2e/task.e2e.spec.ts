@@ -4,7 +4,6 @@ import { Test } from '@nestjs/testing';
 import { PrismaService } from 'src/infra/db/prisma/prisma.service';
 import { AppController } from 'src/modules/app/app.controller';
 import { AppService } from 'src/modules/app/app.service';
-import { setupDatabase } from 'test/utils/setupDatabase';
 import { AppModule } from '../../../../src/modules/app/app.module';
 import { createTask } from './task.create';
 import { taskDelete } from './task.delete';
@@ -36,7 +35,6 @@ describe('Task E2E', () => {
     await app.init();
 
     prisma = app.get<PrismaService>(PrismaService);
-    await setupDatabase(prisma);
   });
 
   afterAll(async () => {

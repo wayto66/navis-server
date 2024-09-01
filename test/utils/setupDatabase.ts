@@ -5,9 +5,12 @@ import {
   TaskStatus,
 } from '@prisma/client';
 
-export const setupDatabase = async (prisma: PrismaClient) => {
+export const setupDatabase = async () => {
+  const prisma = new PrismaClient();
+  await prisma.$connect();
   await cleanDatabase(prisma);
   await createData(prisma);
+  await prisma.$disconnect();
 };
 
 const cleanDatabase = async (prisma: PrismaClient) => {
