@@ -5,7 +5,7 @@ import { PrismaService } from 'src/infra/db/prisma/prisma.service';
 import { AppController } from 'src/modules/app/app.controller';
 import { AppModule } from 'src/modules/app/app.module';
 import { AppService } from 'src/modules/app/app.service';
-import { setupDatabase } from 'test/utils/setupDatabase';
+
 import { checkRoutine, DAY_COUNTRoutineCheck } from './routine.check.ts';
 import {
   createRoutine,
@@ -41,7 +41,6 @@ describe('RoutineE2E', () => {
     await app.init();
 
     prisma = app.get(PrismaService);
-    await setupDatabase(prisma);
   });
 
   afterAll(async () => await app.close());
