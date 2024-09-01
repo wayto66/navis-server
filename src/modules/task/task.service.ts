@@ -34,7 +34,7 @@ export class TaskService {
     if (!createProject && !input_projectId)
       throw new BadRequestException('Must provide projectId or createProject.');
 
-    const appUrl = process.env.APP_URL;
+    const appUrl = process.env.NAVIS_APP_URL;
     const dependentTasksIds = dependsOnIds ? [...dependsOnIds] : [];
     const shouldNotify = creatorId !== assignedId;
 
