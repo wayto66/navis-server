@@ -8,4 +8,5 @@ try {
   execSync('jest', { stdio: 'inherit' });
 } catch (e) {
   console.error(e.message);
+  process.exit(1);
 }
