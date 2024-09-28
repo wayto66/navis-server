@@ -7,13 +7,19 @@ import { AppModule } from './modules/app/app.module';
 async function bootstrap() {
   let httpsOptions: { key: Buffer; cert: Buffer } | undefined;
   if (
-    fs.existsSync('/etc/letsencrypt/live/alabarda.link/privkey.pem') &&
-    fs.existsSync('/etc/letsencrypt/live/alabarda.link/fullchain.pem')
+    fs.existsSync(
+      '/etc/letsencrypt/live/sistemas.alabarda.com.br/privkey.pem',
+    ) &&
+    fs.existsSync(
+      '/etc/letsencrypt/live/sistemas.alabarda.com.br/fullchain.pem',
+    )
   ) {
     httpsOptions = {
-      key: fs.readFileSync('/etc/letsencrypt/live/alabarda.link/privkey.pem'),
+      key: fs.readFileSync(
+        '/etc/letsencrypt/live/sistemas.alabarda.com.br/privkey.pem',
+      ),
       cert: fs.readFileSync(
-        '/etc/letsencrypt/live/alabarda.link/fullchain.pem',
+        '/etc/letsencrypt/live/sistemas.alabarda.com.br/fullchain.pem',
       ),
     };
   }
