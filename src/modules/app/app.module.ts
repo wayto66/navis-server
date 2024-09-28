@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { PrismaModule } from '../../infra/db/prisma/prisma.module';
 import { CommentModule } from '../comment/comment.module';
 import { CustomerModule } from '../customer/customer.module';
+import { MetricModule } from '../metric/metric.module';
 import { NoteModule } from '../note/note.module';
 import { NotifyModule } from '../notify/notify.module';
 import { ProjectModule } from '../project/project.module';
@@ -22,6 +23,7 @@ import { AppService } from './app.service';
     ProjectModule,
     NoteModule,
     RoutineModule,
+    MetricModule,
   ],
   controllers: [AppController],
   providers: [AppService],
