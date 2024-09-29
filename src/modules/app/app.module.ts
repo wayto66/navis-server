@@ -1,4 +1,5 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { MetricMiddleware } from 'src/infra/middlewares/metric.middleware';
 import { PrismaModule } from '../../infra/db/prisma/prisma.module';
 import { CommentModule } from '../comment/comment.module';
 import { CustomerModule } from '../customer/customer.module';
@@ -28,4 +29,11 @@ import { AppService } from './app.service';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(MetricMiddleware)
+      .exclude({ path: 'metric', method: RequestMethod.GET })
+      .forRoutes('*');
+  }
+}
