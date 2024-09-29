@@ -71,4 +71,8 @@ export class MetricService {
 
     this.cpuUsageGauge.set(userCPUPercentage + systemCPUPercentage);
   }
+
+  async getMetrics() {
+    return await register.metrics();
+  }
 }
